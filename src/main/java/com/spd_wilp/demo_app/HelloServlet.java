@@ -19,6 +19,7 @@ public class HelloServlet extends HttpServlet {
     log.info("{} initialized!", this.getClass().getName());
   }
 
+  @Override
   public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
     PrintWriter out = res.getWriter();
     log.info("req received={}", req);
