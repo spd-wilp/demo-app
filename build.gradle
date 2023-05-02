@@ -1,6 +1,10 @@
 
-apply plugin: "java"
-apply plugin: "war"
+plugins {
+    id "java"
+    id "war"
+    id "org.sonarqube" version "3.5.0.2730"
+}
+
 
 group = "com.spd_wilp.demo_app"
 version = "1.1"
@@ -63,6 +67,14 @@ tasks.register('integrationTest', Test) {
     testLogging {
         events "passed"
     }
+}
+
+sonarqube {
+  properties {
+    property "sonar.projectKey", "spd-wilp_demo-app"
+    property "sonar.organization", "spd-wilp"
+    property "sonar.host.url", "https://sonarcloud.io"
+  }
 }
 
 defaultTasks 'clean', 'build'
