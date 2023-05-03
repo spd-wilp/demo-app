@@ -1,0 +1,80 @@
+
+plugins {
+    id "java"
+    id "war"
+    // id "org.sonarqube" version "4.0.0.2929"
+}
+
+
+group = "com.spd_wilp.demo_app"
+version = "1.1"
+
+repositories {
+    mavenCentral()
+}
+
+configurations {
+    provided
+}
+
+sourceSets {
+    main {
+        compileClasspath += configurations.provided
+    }
+
+    intTest {
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.output
+    }
+}
+
+dependencies {
+    implementation 'org.slf4j:slf4j-api:1.7.25'
+    implementation 'ch.qos.logback:logback-classic:1.2.3'
+    implementation 'jakarta.servlet:jakarta.servlet-api:5.0.0'
+    testImplementation 'org.testng:testng:6.9.13.6'
+}
+
+sourceCompatibility = 17
+targetCompatibility = 17
+
+war {
+    webAppDirectory = file('src/main/webapp')
+}
+
+test {
+    testLogging {
+        showStandardStreams = true
+        exceptionFormat = 'full'
+    }
+    useTestNG() {
+        excludeGroups 'integration'
+    }
+}
+
+tasks.register('integrationTest', Test) {
+    description = 'Runs integration tests.'
+    group = 'integrationtest'
+
+    testClassesDirs = sourceSets.intTest.output.classesDirs
+    classpath = sourceSets.intTest.runtimeClasspath
+    shouldRunAfter test
+
+    useTestNG() {
+        includeGroups 'integration'
+    }
+
+    testLogging {
+        events "passed"
+    }
+}
+
+// sonar {
+//   properties {
+//     property "sonar.projectKey", "spd-wilp_demo-app"
+//     property "sonar.organization", "spd-wilp"
+//     property "sonar.host.url", "https://sonarcloud.io"
+//   }
+// }
+
+defaultTasks 'clean', 'build'
